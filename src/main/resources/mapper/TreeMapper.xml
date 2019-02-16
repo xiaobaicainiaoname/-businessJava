@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.TreeMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.model.Tree">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tree
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.model.Tree">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tree (label, sort, parent_id
+      )
+    values (#{label,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.model.Tree">
+    update tree
+    set 
+	    <if test="label!=null and label!=''">label = #{label,jdbcType=VARCHAR},</if>
+	    <if test="sort!=null">sort = #{sort,jdbcType=INTEGER},</if>
+	    <if test="parentId!=null">parent_id = #{parentId,jdbcType=INTEGER}</if>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, label, sort, parent_id
+    from tree
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, label, sort, parent_id
+    from tree
+  </select>
+  
+  <select id="selectByParentId" parameterType="java.lang.Integer" resultType="com.example.demo.model.web.WebTree">
+  	SELECT
+		id,
+		label,
+		sort,
+		parent_id parentId 
+	FROM
+		tree 
+	WHERE
+		parent_id = #{parentId}
+	ORDER BY
+		sort ASC
+  </select>
+  
+   <update id="updateSortByParentId">
+    UPDATE tree 
+	SET sort = sort + #{move}
+	WHERE
+		parent_id = #{parentId,jdbcType=INTEGER}
+     AND sort BETWEEN #{minSort} AND #{maxSort}
+  </update>
+   <update id="updateSortByAsyncParentId">
+    UPDATE tree 
+	SET sort = sort + #{move}
+	WHERE
+		parent_id = #{parentId,jdbcType=INTEGER}
+		AND sort >=#{sort}
+  </update>
+  
+  
+</mapper>
