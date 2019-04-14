@@ -27,6 +27,9 @@ public class TreeController {
 	@ApiOperation(value="查询菜单",notes="递归查询菜单")
 	@RequestMapping(value="query",method=RequestMethod.GET)
 	public List<WebTree> queryTree(){
+		String name = Thread.currentThread().getName();
+//		int a=1/0;
+		System.out.println(name);
 		return treeService.queryTree();
 	}
 	
