@@ -1,9 +1,13 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +20,8 @@ import com.example.demo.service.TreeService;
 
 import io.swagger.annotations.ApiOperation;
 
-@CrossOrigin
+@CrossOrigin({"http://test1.com:8084","http://localhost:8080","http://127.0.0.1:8084","*"})
+//@CrossOrigin({"*"})
 @RestController
 @RequestMapping(value="tree",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TreeController {
@@ -26,10 +31,11 @@ public class TreeController {
 	
 	@ApiOperation(value="查询菜单",notes="递归查询菜单")
 	@RequestMapping(value="query",method=RequestMethod.GET)
-	public List<WebTree> queryTree(){
+	public List<WebTree> queryTree(@CookieValue(value="test1",required=false)String cookie){
 		String name = Thread.currentThread().getName();
 //		int a=1/0;
 		System.out.println(name);
+		System.err.println(cookie);
 		return treeService.queryTree();
 	}
 	
@@ -52,4 +58,16 @@ public class TreeController {
 	public String deleteTree(@RequestBody Integer id){
 		return treeService.deleteTree(id);
 	}
+	@RequestMapping(value="redirect",method=RequestMethod.GET)
+	@ApiOperation(value="测试重定向",notes="测试重定向")
+	public void deleteTree(HttpServletResponse response) throws IOException{
+//		response.sendRedirect("https://www.baidu.com/");
+//		response.sendRedirect("http://localhost:8080/tree#/tree/query");
+		response.sendRedirect("http://test1.com:8084/tree/query?id=1"); 
+		
+//		response.CrossOrigin
+//		return null;
+	}
+	
+	
 }

@@ -1,0 +1,24 @@
+# 管理节点配置
+management:
+  endpoints:
+    web:
+      # actuator的前缀地址
+      base-path: /
+      # 开放指定节点
+      exposure:
+        include:
+          - health
+          - info
+          - mappings
+          - env
+          - shutdown
+    # 开启远程关闭服务
+#    shutdown:
+#      enabled: true
+# post     http://localhost:8084/shutdown
+#management:
+  endpoint:
+    shutdown:
+      enabled: true
+      
+#通过management.endpoint.shutdown.enabled参数来进行设置，默认为false，默认不会开启远程关闭服务功能，然后把shutdown节点进行开放，否则无法发送远程关机请求。
